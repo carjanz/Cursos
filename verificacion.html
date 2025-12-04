@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación Rápida - CursoHub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f9f9f9;
+            border-left: 4px solid #ddd;
+            border-radius: 4px;
+        }
+        .checklist li.ok {
+            background: #f0fff4;
+            border-left-color: #28a745;
+        }
+        .checklist li.error {
+            background: #fff5f5;
+            border-left-color: #dc3545;
+        }
+        .checklist li.loading {
+            background: #fff8f0;
+            border-left-color: #ffc107;
+        }
+        .icon {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .ok .icon { color: #28a745; }
+        .error .icon { color: #dc3545; }
+        .loading .icon { color: #ffc107; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .status {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            background: #f0f0f0;
+        }
+        .status.ok {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .status.error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Verificación Rápida - CursoHub</h1>
+        
+        <p>Esta página verifica que tu plataforma está funcionando correctamente.</p>
+        
+        <button onclick="runChecks()">🚀 Ejecutar Verificación</button>
+        
+        <ul class="checklist" id="checklist">
+            <li class="loading" id="check-api-etiquetas">
+                <span class="icon">⏳</span>
+                <strong>API Etiquetas:</strong> Verificando conexión...
+            </li>
+            <li class="loading" id="check-api-cursos">
+                <span class="icon">⏳</span>
+                <strong>API Cursos:</strong> Verificando conexión...
+            </li>
+            <li class="loading" id="check-api-curso">
+                <span class="icon">⏳</span>
+                <strong>API Curso (por slug):</strong> Verificando conexión...
+            </li>
+            <li class="loading" id="check-db-cursos">
+                <span class="icon">⏳</span>
+                <strong>Base de Datos:</strong> Verificando cursos...
+            </li>
+            <li class="loading" id="check-page-principal">
+                <span class="icon">⏳</span>
+                <strong>Página Principal:</strong> Verificando acceso...
+            </li>
+            <li class="loading" id="check-admin">
+                <span class="icon">⏳</span>
+                <strong>Panel Admin:</strong> Verificando acceso...
+            </li>
+        </ul>
+        
+        <div class="status" id="result" style="display: none;">
+            <h3 id="result-title"></h3>
+            <p id="result-message"></p>
+        </div>
+    </div>
+
+    <script>
+        async function runChecks() {
+            const baseUrl = window.location.origin + window.location.pathname.replace('verificacion.html', '');
+            let allOk = true;
+
+            // Check 1: API Etiquetas
+            try {
+                const response = await fetch(baseUrl + 'api/get_etiquetas.php');
+                const data = await response.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    updateCheck('check-api-etiquetas', 'ok', `API Etiquetas: ✓ ${data.length} etiquetas encontradas`);
+                } else {
+                    updateCheck('check-api-etiquetas', 'error', 'API Etiquetas: ✗ No hay etiquetas');
+                    allOk = false;
+                }
+            } catch (e) {
+                updateCheck('check-api-etiquetas', 'error', 'API Etiquetas: ✗ ' + e.message);
+                allOk = false;
+            }
+
+            // Check 2: API Cursos
+            try {
+                const response = await fetch(baseUrl + 'api/get_cursos.php');
+                const data = await response.json();
+                if (data.cursos && data.cursos.length > 0) {
+                    updateCheck('check-api-cursos', 'ok', `API Cursos: ✓ ${data.total_cursos} cursos encontrados`);
+                } else {
+                    updateCheck('check-api-cursos', 'error', 'API Cursos: ✗ No hay cursos');
+                    allOk = false;
+                }
+            } catch (e) {
+                updateCheck('check-api-cursos', 'error', 'API Cursos: ✗ ' + e.message);
+                allOk = false;
+            }
+
+            // Check 3: API Curso por slug
+            try {
+                const response = await fetch(baseUrl + 'api/get_curso.php?slug=introduccion-diseno-grafico');
+                const data = await response.json();
+                if (data.titulo) {
+                    updateCheck('check-api-curso', 'ok', `API Curso: ✓ ${data.titulo}`);
+                } else {
+                    updateCheck('check-api-curso', 'error', 'API Curso: ✗ No se encontró el curso');
+                    allOk = false;
+                }
+            } catch (e) {
+                updateCheck('check-api-curso', 'error', 'API Curso: ✗ ' + e.message);
+                allOk = false;
+            }
+
+            // Check 4: DB - Contar cursos
+            try {
+                const response = await fetch(baseUrl + 'api/get_cursos.php?page=1');
+                const data = await response.json();
+                if (data.total_cursos >= 10) {
+                    updateCheck('check-db-cursos', 'ok', `Base de Datos: ✓ ${data.total_cursos} cursos en BD`);
+                } else {
+                    updateCheck('check-db-cursos', 'error', `Base de Datos: ✗ Solo ${data.total_cursos} cursos`);
+                    allOk = false;
+                }
+            } catch (e) {
+                updateCheck('check-db-cursos', 'error', 'Base de Datos: ✗ ' + e.message);
+                allOk = false;
+            }
+
+            // Check 5: Página principal
+            try {
+                const response = await fetch(baseUrl);
+                if (response.ok) {
+                    updateCheck('check-page-principal', 'ok', 'Página Principal: ✓ Accesible');
+                } else {
+                    updateCheck('check-page-principal', 'error', 'Página Principal: ✗ Error ' + response.status);
+                    allOk = false;
+                }
+            } catch (e) {
+                updateCheck('check-page-principal', 'error', 'Página Principal: ✗ ' + e.message);
+                allOk = false;
+            }
+
+            // Check 6: Admin
+            try {
+                const response = await fetch(baseUrl + 'admin/');
+                if (response.ok) {
+                    updateCheck('check-admin', 'ok', 'Panel Admin: ✓ Accesible');
+                } else {
+                    updateCheck('check-admin', 'error', 'Panel Admin: ✗ Error ' + response.status);
+                    allOk = false;
+                }
+            } catch (e) {
+                updateCheck('check-admin', 'error', 'Panel Admin: ✗ ' + e.message);
+                allOk = false;
+            }
+
+            // Mostrar resultado final
+            const resultDiv = document.getElementById('result');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+
+            resultDiv.style.display = 'block';
+            if (allOk) {
+                resultDiv.className = 'status ok';
+                resultTitle.textContent = '✅ ¡Verificación Exitosa!';
+                resultMessage.textContent = 'Tu plataforma CursoHub está 100% funcional. Puedes acceder a: /' + ' (inicio), /admin/ (panel de administración), /api_tester.html (prueba de API).';
+            } else {
+                resultDiv.className = 'status error';
+                resultTitle.textContent = '⚠️ Se encontraron problemas';
+                resultMessage.textContent = 'Revisa los errores arriba. Verifica que la base de datos está creada y que config/db.php tiene las credenciales correctas.';
+            }
+        }
+
+        function updateCheck(id, status, message) {
+            const element = document.getElementById(id);
+            element.className = status;
+            element.innerHTML = `<span class="icon">${status === 'ok' ? '✅' : '❌'}</span> ${message}`;
+        }
+
+        // Auto-run checks on load
+        window.addEventListener('load', function() {
+            console.log('Iniciando verificación automática...');
+            // Descomentar si deseas que se ejecute automáticamente
+            // runChecks();
+        });
+    </script>
+</body>
+</html>

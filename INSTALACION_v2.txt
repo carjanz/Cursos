@@ -1,0 +1,194 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    ⚡ GUÍA RÁPIDA DE INSTALACIÓN v2                             ║
+║                        CursoHub - Plataforma de Cursos                          ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+📋 REQUISITOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ PHP 7.4 o superior
+✓ MySQL 5.7 o superior
+✓ Servidor Apache o PHP built-in
+✓ Navegador web moderno (Chrome, Firefox, Edge, Safari)
+
+🚀 PASOS DE INSTALACIÓN (3 MINUTOS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣  INSTALAR LA BASE DE DATOS
+────────────────────────────────────────────────────────────────────────────────
+
+Opción A: Con Apache + phpMyAdmin
+───────────────────────────────────
+  1. Abre tu navegador en http://localhost/phpmyadmin
+  2. Copia TODO el contenido de: database/schema.sql
+  3. Pega en la sección "SQL" de phpMyAdmin
+  4. Ejecuta (botón "Ejecutar")
+  5. ✅ Listo
+
+Opción B: Con servidor PHP built-in
+────────────────────────────────────────
+  1. Abre PowerShell en la carpeta del proyecto
+  2. Ejecuta: php instalar.php
+  3. Abre en navegador: http://localhost/Centro/instalar.php
+  4. ✅ Listo
+
+
+2️⃣  INICIAR EL SERVIDOR
+────────────────────────────────────────────────────────────────────────────────
+
+Con Apache:
+  • Coloca la carpeta "Centro" en: C:\xampp\htdocs\
+  • Abre: http://localhost/Centro/
+
+Con PHP built-in (si no tienes Apache):
+  1. Abre PowerShell en la carpeta "Centro"
+  2. Ejecuta: php -S localhost:8000
+  3. Abre: http://localhost:8000/
+
+3️⃣  VERIFICAR INSTALACIÓN
+────────────────────────────────────────────────────────────────────────────────
+
+Abre: http://localhost/Centro/verificacion.html
+
+O prueba estos enlaces:
+  ✓ Homepage:        http://localhost/Centro/
+  ✓ API Etiquetas:   http://localhost/Centro/api/get_etiquetas.php
+  ✓ API Cursos:      http://localhost/Centro/api/get_cursos.php
+  ✓ API Tester:      http://localhost/Centro/api_tester.html
+  ✓ Panel Admin:     http://localhost/Centro/admin/
+
+
+⚙️  PROBLEMAS COMUNES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ "Failed to fetch" en API Tester
+───────────────────────────────────
+Solución:
+  1. Abre config/db.php
+  2. Verifica que DB_USER y DB_PASS sean correctos
+  3. Ejecuta: php instalar.php (paso 2.1)
+  4. Recarga la página (F5)
+
+❌ No se ve el sitio
+─────────────────────
+Solución:
+  1. Verifica que el servidor está corriendo
+  2. Abre http://localhost/Centro/ en el navegador
+  3. Abre la consola del navegador (F12) para ver errores
+
+❌ Error de conexión a base de datos
+──────────────────────────────────────
+Solución:
+  1. Verifica que MySQL está corriendo
+  2. En config/db.php, comprueba:
+     - DB_HOST: 'localhost' ✓
+     - DB_USER: 'root' ✓
+     - DB_PASS: '' (vacío si es XAMPP) ✓
+     - DB_NAME: 'cursodb' ✓
+  3. Ejecuta: php instalar.php nuevamente
+
+
+📂 ESTRUCTURA DEL PROYECTO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Centro/
+├── config/
+│   └── db.php .................... Configuración y funciones de BD
+├── database/
+│   └── schema.sql ................ Script de creación de BD
+├── api/
+│   ├── get_cursos.php ............ API de cursos con filtros
+│   ├── get_etiquetas.php ......... API de etiquetas
+│   └── get_curso.php ............. API de curso por slug
+├── includes/
+│   ├── header.php ................ Encabezado común
+│   └── footer.php ................ Pie de página común
+├── assets/
+│   ├── css/
+│   │   ├── style.css ............. Estilos principales
+│   │   └── utils.css ............. Estilos adicionales
+│   └── js/
+│       ├── main.js ............... Funciones generales
+│       └── filters.js ............ Sistema de filtros
+├── admin/
+│   ├── index.php ................. Panel de administración
+│   └── pages/
+│       ├── dashboard.php ......... Estadísticas
+│       ├── cursos.php ............ Gestión de cursos
+│       ├── categorias.php ........ Gestión de categorías
+│       ├── etiquetas.php ......... Gestión de etiquetas
+│       └── usuarios.php .......... Gestión de usuarios
+├── index.php ..................... Página principal
+├── course.php .................... Página de detalle de curso
+├── api_tester.html ............... Herramienta de prueba de APIs
+├── verificacion.html ............. Verificador de instalación
+└── instalar.php .................. Script de instalación
+
+
+🔐 CONFIGURACIÓN DE CREDENCIALES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Edita config/db.php si tienes diferentes credenciales:
+
+define('DB_HOST', 'localhost');    ← Host del servidor MySQL
+define('DB_USER', 'root');         ← Usuario de MySQL
+define('DB_PASS', '');             ← Contraseña (vacío = sin contraseña)
+define('DB_NAME', 'cursodb');      ← Nombre de la base de datos
+define('SITE_URL', 'http://localhost/Centro/'); ← URL del sitio
+
+
+🎯 FUNCIONALIDADES PRINCIPALES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Página principal con catálogo de cursos
+✅ Filtrado dinámico de cursos por etiquetas/tags
+✅ Búsqueda de cursos
+✅ Paginación de resultados (12 por página)
+✅ Página de detalle de cada curso
+✅ Cursos relacionados por categoría
+✅ 3 APIs REST funcionales
+✅ Panel de administración
+✅ Diseño responsive (móvil, tablet, desktop)
+✅ Herramienta de prueba de APIs incluida
+
+
+📱 PRUEBA RÁPIDA DE FUNCIONALIDADES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Abre: http://localhost/Centro/
+   → Verás el catálogo de 10 cursos de ejemplo
+
+2. Haz clic en un curso
+   → Verás los detalles y cursos relacionados
+
+3. Abre: http://localhost/Centro/api_tester.html
+   → Prueba las APIs directamente desde el navegador
+
+4. Abre: http://localhost/Centro/admin/
+   → Accede al panel de administración
+
+
+💡 TIPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• Los datos de ejemplo incluyen 10 cursos, 6 categorías y 10 etiquetas
+• Los estilos son responsive y se adaptan a todos los dispositivos
+• El sistema de filtros funciona sin recargar la página
+• Las APIs devuelven JSON y aceptan CORS
+• Puedes personalizar colores en: assets/css/style.css
+
+
+❓ AYUDA Y SOPORTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Consulta estos archivos de documentación:
+  • README.md ........................ Descripción general del proyecto
+  • PROYECTO.md ...................... Detalles técnicos completos
+  • ESTRUCTURA.txt ................... Listado de archivos y funciones
+
+O abre la consola del navegador (F12) para ver mensajes de error.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+✨ ¡Disfruta tu plataforma CursoHub! ✨
+
+═══════════════════════════════════════════════════════════════════════════════════

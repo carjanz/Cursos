@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester - CursoHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            margin-bottom: 10px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .results {
+            margin-top: 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .results pre {
+            margin: 0;
+            color: #333;
+        }
+        
+        .success {
+            border-left-color: #28a745;
+            background: #f0fff4;
+        }
+        
+        .error {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-right: 5px;
+        }
+        
+        .status-ok {
+            color: #28a745;
+        }
+        
+        .status-error {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-flask"></i> API Tester - CursoHub</h1>
+            <p>Prueba los endpoints de la API en tiempo real</p>
+        </header>
+        
+        <div class="grid">
+            <!-- Test: Obtener Etiquetas -->
+            <div class="card">
+                <h2><i class="fas fa-tags"></i> Obtener Etiquetas</h2>
+                <p>Obtiene todas las etiquetas disponibles en el sistema</p>
+                <button id="btn-etiquetas" onclick="testGetEtiquetas()">
+                    <span id="btn-etiquetas-text">Probar API</span>
+                </button>
+                <div id="result-etiquetas" class="results" style="display: none;">
+                    <pre id="content-etiquetas"></pre>
+                </div>
+            </div>
+            
+            <!-- Test: Obtener Cursos -->
+            <div class="card">
+                <h2><i class="fas fa-book"></i> Obtener Cursos</h2>
+                <p>Obtiene todos los cursos (página 1)</p>
+                <button id="btn-cursos" onclick="testGetCursos()">
+                    <span id="btn-cursos-text">Probar API</span>
+                </button>
+                <div id="result-cursos" class="results" style="display: none;">
+                    <pre id="content-cursos"></pre>
+                </div>
+            </div>
+            
+            <!-- Test: Obtener Cursos con Filtro -->
+            <div class="card">
+                <h2><i class="fas fa-filter"></i> Cursos con Filtro</h2>
+                <p>Obtiene cursos filtrados por etiqueta</p>
+                <div class="input-group">
+                    <label>ID de Etiqueta:</label>
+                    <select id="filter-tag-id">
+                        <option value="1">1 - Principiante</option>
+                        <option value="2">2 - Intermedio</option>
+                        <option value="3">3 - Avanzado</option>
+                        <option value="4">4 - Proyecto Práctico</option>
+                        <option value="5">5 - Certificado</option>
+                    </select>
+                </div>
+                <button id="btn-cursos-filter" onclick="testGetCursosFiltered()">
+                    <span id="btn-cursos-filter-text">Probar Filtro</span>
+                </button>
+                <div id="result-cursos-filter" class="results" style="display: none;">
+                    <pre id="content-cursos-filter"></pre>
+                </div>
+            </div>
+            
+            <!-- Test: Obtener Curso por Slug -->
+            <div class="card">
+                <h2><i class="fas fa-search"></i> Curso por Slug</h2>
+                <p>Obtiene detalles de un curso específico</p>
+                <div class="input-group">
+                    <label>Slug del Curso:</label>
+                    <select id="filter-slug">
+                        <option value="introduccion-diseno-grafico">Introducción al Diseño Gráfico</option>
+                        <option value="fotografia-profesional-avanzada">Fotografía Profesional Avanzada</option>
+                        <option value="desarrollo-web-fullstack">Desarrollo Web Fullstack</option>
+                        <option value="social-media-marketing">Social Media Marketing</option>
+                        <option value="edicion-video-profesional">Edición de Vídeo Profesional</option>
+                        <option value="animacion-3d-blender">Animación 3D con Blender</option>
+                    </select>
+                </div>
+                <button id="btn-slug" onclick="testGetCursoBySlug()">
+                    <span id="btn-slug-text">Probar API</span>
+                </button>
+                <div id="result-slug" class="results" style="display: none;">
+                    <pre id="content-slug"></pre>
+                </div>
+            </div>
+            
+            <!-- Test: Búsqueda -->
+            <div class="card">
+                <h2><i class="fas fa-magnifying-glass"></i> Búsqueda</h2>
+                <p>Busca cursos por término</p>
+                <div class="input-group">
+                    <label>Término de búsqueda:</label>
+                    <input type="text" id="search-term" placeholder="Ej: diseño, programación, foto..." value="diseño">
+                </div>
+                <button id="btn-search" onclick="testSearch()">
+                    <span id="btn-search-text">Buscar</span>
+                </button>
+                <div id="result-search" class="results" style="display: none;">
+                    <pre id="content-search"></pre>
+                </div>
+            </div>
+            
+            <!-- Test: Estadísticas -->
+            <div class="card">
+                <h2><i class="fas fa-chart-bar"></i> Estadísticas</h2>
+                <p>Obtiene estadísticas del sistema</p>
+                <button id="btn-stats" onclick="testStats()">
+                    <span id="btn-stats-text">Obtener Estadísticas</span>
+                </button>
+                <div id="result-stats" class="results" style="display: none;">
+                    <pre id="content-stats"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const baseUrl = window.location.origin + window.location.pathname.replace('api_tester.html', '');
+        
+        function showLoading(btnId, btnTextId) {
+            const btn = document.getElementById(btnId);
+            const btnText = document.getElementById(btnTextId);
+            btnText.innerHTML = '<span class="loading"></span> Cargando...';
+            btn.disabled = true;
+        }
+        
+        function hideLoading(btnId, btnTextId) {
+            const btn = document.getElementById(btnId);
+            const btnText = document.getElementById(btnTextId);
+            btnText.textContent = 'Probar API';
+            btn.disabled = false;
+        }
+        
+        function displayResult(resultId, contentId, data, isError = false) {
+            const resultDiv = document.getElementById(resultId);
+            const contentDiv = document.getElementById(contentId);
+            
+            resultDiv.className = 'results ' + (isError ? 'error' : 'success');
+            resultDiv.style.display = 'block';
+            
+            if (typeof data === 'string') {
+                contentDiv.textContent = data;
+            } else {
+                contentDiv.textContent = JSON.stringify(data, null, 2);
+            }
+        }
+        
+        function testGetEtiquetas() {
+            showLoading('btn-etiquetas', 'btn-etiquetas-text');
+            
+            fetch(baseUrl + 'api/get_etiquetas.php')
+                .then(response => response.json())
+                .then(data => {
+                    displayResult('result-etiquetas', 'content-etiquetas', data);
+                    hideLoading('btn-etiquetas', 'btn-etiquetas-text');
+                })
+                .catch(error => {
+                    displayResult('result-etiquetas', 'content-etiquetas', 'Error: ' + error.message, true);
+                    hideLoading('btn-etiquetas', 'btn-etiquetas-text');
+                });
+        }
+        
+        function testGetCursos() {
+            showLoading('btn-cursos', 'btn-cursos-text');
+            
+            fetch(baseUrl + 'api/get_cursos.php?page=1')
+                .then(response => response.json())
+                .then(data => {
+                    displayResult('result-cursos', 'content-cursos', data);
+                    hideLoading('btn-cursos', 'btn-cursos-text');
+                })
+                .catch(error => {
+                    displayResult('result-cursos', 'content-cursos', 'Error: ' + error.message, true);
+                    hideLoading('btn-cursos', 'btn-cursos-text');
+                });
+        }
+        
+        function testGetCursosFiltered() {
+            const tagId = document.getElementById('filter-tag-id').value;
+            showLoading('btn-cursos-filter', 'btn-cursos-filter-text');
+            
+            fetch(baseUrl + 'api/get_cursos.php?page=1&tags=' + tagId)
+                .then(response => response.json())
+                .then(data => {
+                    displayResult('result-cursos-filter', 'content-cursos-filter', data);
+                    hideLoading('btn-cursos-filter', 'btn-cursos-filter-text');
+                })
+                .catch(error => {
+                    displayResult('result-cursos-filter', 'content-cursos-filter', 'Error: ' + error.message, true);
+                    hideLoading('btn-cursos-filter', 'btn-cursos-filter-text');
+                });
+        }
+        
+        function testGetCursoBySlug() {
+            const slug = document.getElementById('filter-slug').value;
+            showLoading('btn-slug', 'btn-slug-text');
+            
+            fetch(baseUrl + 'api/get_curso.php?slug=' + slug)
+                .then(response => response.json())
+                .then(data => {
+                    displayResult('result-slug', 'content-slug', data);
+                    hideLoading('btn-slug', 'btn-slug-text');
+                })
+                .catch(error => {
+                    displayResult('result-slug', 'content-slug', 'Error: ' + error.message, true);
+                    hideLoading('btn-slug', 'btn-slug-text');
+                });
+        }
+        
+        function testSearch() {
+            const term = document.getElementById('search-term').value;
+            if (!term) {
+                alert('Por favor ingresa un término de búsqueda');
+                return;
+            }
+            
+            showLoading('btn-search', 'btn-search-text');
+            
+            fetch(baseUrl + 'api/get_cursos.php?search=' + encodeURIComponent(term))
+                .then(response => response.json())
+                .then(data => {
+                    displayResult('result-search', 'content-search', data);
+                    hideLoading('btn-search', 'btn-search-text');
+                })
+                .catch(error => {
+                    displayResult('result-search', 'content-search', 'Error: ' + error.message, true);
+                    hideLoading('btn-search', 'btn-search-text');
+                });
+        }
+        
+        function testStats() {
+            showLoading('btn-stats', 'btn-stats-text');
+            
+            // Esta es una prueba que simula estadísticas
+            // En una versión real, crear endpoint específico
+            fetch(baseUrl + 'api/get_cursos.php')
+                .then(response => response.json())
+                .then(data => {
+                    const stats = {
+                        'Total de Cursos': data.total_cursos || 0,
+                        'Total de Páginas': data.total_pages || 0,
+                        'Cursos en esta página': data.cursos.length || 0,
+                        'Endpoint': 'api/get_cursos.php',
+                        'Método': 'GET',
+                        'Timestamp': new Date().toISOString()
+                    };
+                    displayResult('result-stats', 'content-stats', stats);
+                    hideLoading('btn-stats', 'btn-stats-text');
+                })
+                .catch(error => {
+                    displayResult('result-stats', 'content-stats', 'Error: ' + error.message, true);
+                    hideLoading('btn-stats', 'btn-stats-text');
+                });
+        }
+    </script>
+</body>
+</html>

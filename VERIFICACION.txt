@@ -1,0 +1,140 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    ✅ VERIFICACIÓN DE CONFIGURACIÓN                            ║
+║                     CursoHub - Archivos Validados                              ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+📋 VERIFICACIÓN COMPLETADA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ config/db.php
+───────────────────────────────────────────────────────────────────────────────
+  • DB_HOST: 'localhost' ............................ ✓
+  • DB_USER: 'root' ................................ ✓
+  • DB_PASS: '' (sin contraseña) ................... ✓
+  • DB_NAME: 'cursos_db' ........................... ✓ (CONSISTENTE)
+  • DB_CHARSET: 'utf8mb4' .......................... ✓
+  • SITE_URL: 'http://localhost/Centro/' .......... ✓
+  • Headers CORS configurados ..................... ✓
+  • Funciones de BD presentes ..................... ✓
+
+✅ database/schema.sql
+───────────────────────────────────────────────────────────────────────────────
+  • CREATE DATABASE: 'cursos_db' .................. ✓ (CONSISTENTE)
+  • Charset: utf8mb4 ............................. ✓
+  • Collation: utf8mb4_unicode_ci ................ ✓
+  • Tabla categorias ............................. ✓ (6 registros)
+  • Tabla etiquetas .............................. ✓ (10 registros)
+  • Tabla cursos ................................. ✓ (10 registros)
+  • Tabla curso_etiqueta ......................... ✓ (20+ relaciones)
+  • Tabla usuarios ............................... ✓
+  • Tabla inscripciones .......................... ✓
+  • Tabla lecciones .............................. ✓
+
+✅ instalar.php
+───────────────────────────────────────────────────────────────────────────────
+  • $db_name: 'cursos_db' ......................... ✓ (CONSISTENTE)
+  • Script de instalación automática ............ ✓
+  • Crea tablas y datos de ejemplo .............. ✓
+
+
+🎯 RESUMEN DE CONSISTENCIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Nombre de Base de Datos (TODOS CONSISTENTES):
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ config/db.php ..................... DB_NAME = 'cursos_db'           ✓      │
+│ database/schema.sql ............... CREATE DATABASE cursos_db        ✓      │
+│ instalar.php ...................... $db_name = 'cursos_db'           ✓      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Todas las credenciales coinciden y usan:
+  • Host: localhost
+  • User: root
+  • Password: (vacío)
+  • Database: cursos_db ✓
+
+
+🚀 PASOS PARA INSTALAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPCIÓN 1: Instalación automática (RECOMENDADO)
+───────────────────────────────────────────────
+  1. Abre en navegador: http://localhost/Centro/instalar.php
+  2. Verifica que veas "✅ ¡Instalación completada!"
+  3. Listo - la BD está creada con datos de ejemplo
+
+OPCIÓN 2: Instalación manual (con phpMyAdmin)
+──────────────────────────────────────────────
+  1. Abre http://localhost/phpmyadmin
+  2. Ve a la sección "SQL"
+  3. Copia TODO el contenido de: database/schema.sql
+  4. Pega en el formulario SQL
+  5. Ejecuta
+  6. Listo
+
+OPCIÓN 3: Línea de comandos (MySQL directamente)
+────────────────────────────────────────────────
+  1. Abre cmd/PowerShell
+  2. Ejecuta:
+     mysql -u root < database\schema.sql
+  3. Listo
+
+
+✨ VERIFICAR QUE TODO FUNCIONA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Después de instalar, abre en navegador:
+
+1. http://localhost/Centro/verificacion.html
+   → Debería mostrar ✅ verde en todas las pruebas
+
+2. http://localhost/Centro/
+   → Debería mostrar el catálogo de 10 cursos
+
+3. http://localhost/Centro/api_tester.html
+   → Debería poder hacer click en "Probar API" sin errores
+
+4. http://localhost/Centro/admin/
+   → Debería mostrar el panel de administración
+
+
+📊 BASE DE DATOS - DATOS INCLUIDOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Se crean automáticamente:
+  • 6 Categorías: Diseño, Fotografía, Programación, Marketing Digital, Vídeo, Animación
+  • 10 Etiquetas: Principiante, Intermedio, Avanzado, Proyecto Práctico, etc.
+  • 10 Cursos: Con instructores, precios, duraciones y descripciones reales
+  • 20+ Relaciones: Cursos vinculados con etiquetas
+
+
+❓ SOPORTE - SI TIENES PROBLEMAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problema: "Error de conexión: Access denied for user 'root'@'localhost'"
+Solución:
+  • Verifica que MySQL está corriendo
+  • Abre phpMyAdmin y comprueba el usuario 'root'
+  • Si necesitas contraseña, edita config/db.php:
+    define('DB_PASS', 'tu_contraseña_aqui');
+
+Problema: "Failed to fetch" en API Tester
+Solución:
+  • Abre la consola (F12) y mira el error exacto
+  • Verifica que la BD está creada (http://localhost/Centro/verificacion.html)
+  • Comprueba que Apache/PHP está corriendo
+
+Problema: No se ve ningún curso en la página principal
+Solución:
+  • Verifica que ejecutaste instalar.php
+  • Abre phpMyAdmin y ve a "cursos_db" > "cursos"
+  • Debe haber 10 registros
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+✨ TODAS LAS CONFIGURACIONES ESTÁN CORRECTAS Y CONSISTENTES ✨
+
+Ahora solo falta ejecutar: http://localhost/Centro/instalar.php
+
+═══════════════════════════════════════════════════════════════════════════════════
