@@ -264,7 +264,7 @@ GET /api/get_curso.php?slug=titulo-del-curso
 
 ## 📞 Soporte
 
-Para reportar problemas o sugerencias, por favor contacta al equipo de desarrollo.
+Para reportar problemas o sugerencias, por favor contacta con carlosaraujomejia@hotmail.com.
 
 ## 📄 Licencia
 
